@@ -1,43 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Generate high-quality exam prep prompts for KVS/NVS CBSE Class 9 to 12. Support for all subjects, chapters, study modes, and custom difficulty levels.">
+  <title>KVS NVS Class 9 to 12 Prompt Generator</title>
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+  :root {
+    --font-sans: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: 'Fira Code', 'Courier New', Courier, monospace;
+    --border-radius-sm: 6px;
+    --border-radius-md: 10px;
+    --border-radius-lg: 16px;
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-.wrap{padding:1.5rem 0;font-family:var(--font-sans)}
-.row{display:flex;gap:12px;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center}
-.lbl{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
-select{width:100%;padding:8px 12px;font-size:14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
-.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem}
-.chip{padding:5px 13px;border-radius:99px;border:0.5px solid var(--color-border-secondary);font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);transition:all .12s;user-select:none;line-height:1.4}
-.chip:hover{background:var(--color-background-secondary)}
-.chip.on-purple{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
-.chip.on-teal{background:#E1F5EE;border-color:#5DCAA5;color:#085041}
-.chip.on-amber{background:#FAEEDA;border-color:#EF9F27;color:#633806}
-.chip.on-coral{background:#FAECE7;border-color:#F0997B;color:#712B13}
-.chip.on-blue{background:#E6F1FB;border-color:#85B7EB;color:#0C447C}
-.divider{height:0.5px;background:var(--color-border-tertiary);margin:1.25rem 0}
-.prompt-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;font-size:13.5px;color:var(--color-text-primary);line-height:1.75;white-space:pre-wrap;min-height:140px;margin-bottom:1rem;font-family:var(--font-mono)}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap}
-button{padding:7px 18px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:14px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);display:inline-flex;align-items:center;gap:6px;transition:all .12s}
-button:hover{background:var(--color-background-secondary)}
-.btn-gen{background:#3C3489;color:#EEEDFE;border-color:#3C3489}
-.btn-gen:hover{background:#26215C}
-.copied{background:#E1F5EE !important;color:#085041 !important;border-color:#5DCAA5 !important}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.ch-list{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.25rem}
-.ch-chip{padding:4px 11px;border-radius:99px;border:0.5px solid var(--color-border-tertiary);font-size:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);transition:all .12s;user-select:none}
-.ch-chip:hover{border-color:var(--color-border-secondary);color:var(--color-text-primary)}
-.ch-chip.sel{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
-.sel-all{font-size:12px;color:var(--color-text-secondary);cursor:pointer;text-decoration:underline;margin-bottom:6px;display:inline-block}
-.sel-all:hover{color:var(--color-text-primary)}
-.counter{font-size:12px;color:var(--color-text-secondary);margin-left:8px}
-</style>
+    --color-background-primary: #f8fafc;
+    --color-background-card: #ffffff;
+    --color-background-secondary: #f1f5f9;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+    --color-border-primary: #cbd5e1;
+    --color-border-secondary: #e2e8f0;
+    --color-border-tertiary: #f1f5f9;
+  }
 
-<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">KVS NVS Class 9 to 12 Prompt Generator</h2>
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-background-primary: #0f172a;
+      --color-background-card: #1e293b;
+      --color-background-secondary: #334155;
+      --color-text-primary: #f8fafc;
+      --color-text-secondary: #94a3b8;
+      --color-border-primary: #334155;
+      --color-border-secondary: #475569;
+      --color-border-tertiary: #334155;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--color-background-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 680px;
+    padding: 2rem;
+    background-color: var(--color-background-card);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .lbl {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 8px;
+  }
+
+  select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: var(--font-sans);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-background-card);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  select:focus {
+    border-color: #3C3489;
+    box-shadow: 0 0 0 3px rgba(60, 52, 137, 0.15);
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1.25rem;
+  }
+
+  .chip {
+    padding: 6px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--color-border-primary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    background-color: var(--color-background-card);
+    color: var(--color-text-primary);
+    transition: all .15s ease;
+    user-select: none;
+    line-height: 1.4;
+  }
+
+  .chip:hover {
+    background-color: var(--color-background-secondary);
+    border-color: var(--color-border-secondary);
+  }
+
+  .chip.on-purple {
+    background-color: #EEEDFE;
+    border-color: #AFA9EC;
+    color: #3C3489;
+  }
+
+  .chip.on-purple:hover {
+    background-color: #E0DEFD;
+  }
+
+  .chip.on-teal {
+    background-color: #E1F5EE;
+    border-color: #5DCAA5;
+    color: #085041;
+  }
+
+  .chip.on-teal:hover {
+    background-color: #D2F0E5;
+  }
+
+  .chip.on-amber {
+    background-color: #FAEEDA;
+    border-color: #EF9F27;
+    color: #633806;
+  }
+
+  .chip.on-amber:hover {
+    background-color: #F6E6CA;
+  }
+
+  .chip.on-coral {
+    background-color: #FAECE7;
+    border-color: #F0997B;
+    color: #712B13;
+  }
+
+  .chip.on-coral:hover {
+    background-color: #F5DDD4;
+  }
+
+  .chip.on-blue {
+    background-color: #E6F1FB;
+    border-color: #85B7EB;
+    color: #0C447C;
+  }
+
+  .chip.on-blue:hover {
+    background-color: #D2E5F7;
+  }
+
+  .divider {
+    height: 1px;
+    background-color: var(--color-border-primary);
+    margin: 1.5rem 0;
+  }
+
+  .prompt-box {
+    background-color: var(--color-background-secondary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--border-radius-lg);
+    padding: 1.25rem;
+    font-size: 13.5px;
+    color: var(--color-text-primary);
+    line-height: 1.75;
+    white-space: pre-wrap;
+    min-height: 160px;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-mono);
+    overflow-x: auto;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  button {
+    padding: 10px 20px;
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-border-primary);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    background-color: var(--color-background-card);
+    color: var(--color-text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all .15s ease;
+    outline: none;
+  }
+
+  button:hover {
+    background-color: var(--color-background-secondary);
+    border-color: var(--color-border-secondary);
+  }
+
+  button:focus-visible {
+    border-color: #3C3489;
+    box-shadow: 0 0 0 3px rgba(60, 52, 137, 0.15);
+  }
+
+  .btn-gen {
+    background-color: #3C3489;
+    color: #EEEDFE;
+    border-color: #3C3489;
+  }
+
+  .btn-gen:hover {
+    background-color: #26215C;
+    border-color: #26215C;
+  }
+
+  .copied {
+    background-color: #E1F5EE !important;
+    color: #085041 !important;
+    border-color: #5DCAA5 !important;
+  }
+
+  .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .ch-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1.25rem;
+  }
+
+  .ch-chip {
+    padding: 6px 12px;
+    border-radius: 99px;
+    border: 1px solid var(--color-border-primary);
+    font-size: 12.5px;
+    font-weight: 500;
+    cursor: pointer;
+    background-color: var(--color-background-card);
+    color: var(--color-text-secondary);
+    transition: all .15s ease;
+    user-select: none;
+  }
+
+  .ch-chip:hover {
+    border-color: var(--color-border-secondary);
+    color: var(--color-text-primary);
+    background-color: var(--color-background-secondary);
+  }
+
+  .ch-chip.sel {
+    background-color: #EEEDFE;
+    border-color: #AFA9EC;
+    color: #3C3489;
+  }
+
+  .sel-all {
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    text-decoration: none;
+    margin-bottom: 8px;
+    display: inline-block;
+    font-weight: 500;
+    transition: color 0.15s ease;
+  }
+
+  .sel-all:hover {
+    color: #3C3489;
+    text-decoration: underline;
+  }
+
+  .counter {
+    font-size: 12.5px;
+    color: var(--color-text-secondary);
+    margin-left: 8px;
+    font-weight: 500;
+  }
+  </style>
+</head>
+<body>
 
 <div class="wrap">
 
-<div style="margin-bottom:1.5rem">
-  <div style="font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px"><i class="ti ti-school" aria-hidden="true" style="font-size:18px;vertical-align:-2px;margin-right:8px"></i>KVS / NVS Exam Prompt Generator</div>
-  <div style="font-size:14px;color:var(--color-text-secondary)">Class 9–12 · All subjects · Custom difficulty</div>
+<div style="margin-bottom: 1.5rem;">
+  <h1 style="font-size: 20px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 6px; display: flex; align-items: center;">
+    <i class="ti ti-school" aria-hidden="true" style="font-size: 22px; margin-right: 8px;"></i>
+    KVS / NVS Exam Prompt Generator
+  </h1>
+  <div style="font-size: 14px; color: var(--color-text-secondary);">Class 9–12 · All subjects · Custom difficulty</div>
 </div>
 
 <div class="grid2">
@@ -355,5 +643,12 @@ function askClaude() {
   sendPrompt(text);
 }
 
+function sendPrompt(text) {
+  const url = "https://claude.ai/new?q=" + encodeURIComponent(text);
+  window.open(url, "_blank");
+}
+
 renderSubjects(); renderChapters();
 </script>
+</body>
+</html>
