@@ -1,0 +1,359 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{padding:1.5rem 0;font-family:var(--font-sans)}
+.row{display:flex;gap:12px;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center}
+.lbl{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+select{width:100%;padding:8px 12px;font-size:14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem}
+.chip{padding:5px 13px;border-radius:99px;border:0.5px solid var(--color-border-secondary);font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);transition:all .12s;user-select:none;line-height:1.4}
+.chip:hover{background:var(--color-background-secondary)}
+.chip.on-purple{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
+.chip.on-teal{background:#E1F5EE;border-color:#5DCAA5;color:#085041}
+.chip.on-amber{background:#FAEEDA;border-color:#EF9F27;color:#633806}
+.chip.on-coral{background:#FAECE7;border-color:#F0997B;color:#712B13}
+.chip.on-blue{background:#E6F1FB;border-color:#85B7EB;color:#0C447C}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:1.25rem 0}
+.prompt-box{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;font-size:13.5px;color:var(--color-text-primary);line-height:1.75;white-space:pre-wrap;min-height:140px;margin-bottom:1rem;font-family:var(--font-mono)}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+button{padding:7px 18px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);font-size:14px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);display:inline-flex;align-items:center;gap:6px;transition:all .12s}
+button:hover{background:var(--color-background-secondary)}
+.btn-gen{background:#3C3489;color:#EEEDFE;border-color:#3C3489}
+.btn-gen:hover{background:#26215C}
+.copied{background:#E1F5EE !important;color:#085041 !important;border-color:#5DCAA5 !important}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ch-list{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1.25rem}
+.ch-chip{padding:4px 11px;border-radius:99px;border:0.5px solid var(--color-border-tertiary);font-size:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);transition:all .12s;user-select:none}
+.ch-chip:hover{border-color:var(--color-border-secondary);color:var(--color-text-primary)}
+.ch-chip.sel{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
+.sel-all{font-size:12px;color:var(--color-text-secondary);cursor:pointer;text-decoration:underline;margin-bottom:6px;display:inline-block}
+.sel-all:hover{color:var(--color-text-primary)}
+.counter{font-size:12px;color:var(--color-text-secondary);margin-left:8px}
+</style>
+
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">KVS NVS Class 9 to 12 Prompt Generator</h2>
+
+<div class="wrap">
+
+<div style="margin-bottom:1.5rem">
+  <div style="font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px"><i class="ti ti-school" aria-hidden="true" style="font-size:18px;vertical-align:-2px;margin-right:8px"></i>KVS / NVS Exam Prompt Generator</div>
+  <div style="font-size:14px;color:var(--color-text-secondary)">Class 9–12 · All subjects · Custom difficulty</div>
+</div>
+
+<div class="grid2">
+  <div>
+    <div class="lbl">Class</div>
+    <select id="sel-class" onchange="onClassChange()">
+      <option value="9">Class 9</option>
+      <option value="10">Class 10</option>
+      <option value="11">Class 11</option>
+      <option value="12">Class 12</option>
+    </select>
+  </div>
+  <div>
+    <div class="lbl">Stream (11 & 12)</div>
+    <select id="sel-stream" onchange="onStreamChange()" disabled>
+      <option value="science">Science</option>
+      <option value="commerce">Commerce</option>
+      <option value="arts">Arts / Humanities</option>
+    </select>
+  </div>
+</div>
+
+<div style="margin-top:1.25rem">
+  <div class="lbl">Subject</div>
+  <div class="chip-row" id="subject-chips"></div>
+</div>
+
+<div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+    <div class="lbl" style="margin-bottom:0">Chapters</div>
+    <span class="counter" id="ch-counter"></span>
+  </div>
+  <span class="sel-all" id="sel-all-btn" onclick="toggleAllChapters()">Select all</span>
+  <div class="ch-list" id="chapter-chips"></div>
+</div>
+
+<div class="divider"></div>
+
+<div>
+  <div class="lbl">Study mode</div>
+  <div class="chip-row" id="mode-chips">
+    <div class="chip on-teal" data-mode="full-revision">Full revision</div>
+    <div class="chip" data-mode="mcqs">MCQs</div>
+    <div class="chip" data-mode="short-q">Short answers</div>
+    <div class="chip" data-mode="long-q">Long answers</div>
+    <div class="chip" data-mode="key-concepts">Key concepts</div>
+    <div class="chip" data-mode="prev-year">Previous year style</div>
+    <div class="chip" data-mode="formula-sheet">Formula / fact sheet</div>
+    <div class="chip" data-mode="mind-map">Mind map notes</div>
+  </div>
+</div>
+
+<div>
+  <div class="lbl">Difficulty level</div>
+  <div class="chip-row" id="diff-chips">
+    <div class="chip on-amber" data-diff="easy">Easy (basics)</div>
+    <div class="chip" data-diff="medium">Medium (board level)</div>
+    <div class="chip" data-diff="hard">Hard (KVS/NVS standard)</div>
+    <div class="chip" data-diff="mixed">Mixed (all levels)</div>
+  </div>
+</div>
+
+<div>
+  <div class="lbl">Question count per chapter</div>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.25rem">
+    <input type="range" min="3" max="20" value="8" step="1" id="q-count" style="flex:1" oninput="document.getElementById('q-count-out').textContent=this.value">
+    <span style="font-size:14px;font-weight:500;min-width:28px" id="q-count-out">8</span>
+    <span style="font-size:13px;color:var(--color-text-secondary)">questions</span>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="lbl">Generated prompt</div>
+<div class="prompt-box" id="prompt-output">Configure options above and click Generate.</div>
+
+<div class="btn-row">
+  <button class="btn-gen" onclick="generatePrompt()"><i class="ti ti-sparkles" aria-hidden="true"></i> Generate prompt</button>
+  <button id="copy-btn" onclick="copyPrompt()"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+  <button onclick="askClaude()"><i class="ti ti-arrow-right" aria-hidden="true"></i> Ask Claude ↗</button>
+</div>
+
+</div>
+
+<script>
+const DATA = {
+  9: {
+    subjects: ["Science","Mathematics","Social Science","English","Hindi","Sanskrit"],
+    chapters: {
+      "Science": ["Matter in Our Surroundings","Is Matter Around Us Pure","Atoms and Molecules","Structure of the Atom","The Fundamental Unit of Life","Tissues","Diversity in Living Organisms","Motion","Force and Laws of Motion","Gravitation","Work and Energy","Sound","Why Do We Fall Ill","Natural Resources","Improvement in Food Resources"],
+      "Mathematics": ["Number Systems","Polynomials","Coordinate Geometry","Linear Equations in Two Variables","Introduction to Euclid's Geometry","Lines and Angles","Triangles","Quadrilaterals","Areas of Parallelograms and Triangles","Circles","Constructions","Heron's Formula","Surface Areas and Volumes","Statistics","Probability"],
+      "Social Science": ["The French Revolution","Socialism in Europe and the Russian Revolution","Nazism and the Rise of Hitler","Forest Society and Colonialism","Pastoralists in the Modern World","Peasants and Farmers","History and Sport – The Story of Cricket","Clothing: A Social History","India – Size and Location","Physical Features of India","Drainage","Climate","Natural Vegetation and Wildlife","Population","What is Democracy? Why Democracy?","Constitutional Design","Electoral Politics","Working of Institutions","Democratic Rights","The Story of Village Palampur","People as Resource","Poverty as a Challenge","Food Security in India"],
+      "English": ["The Fun They Had","The Sound of Music","The Little Girl","A Truly Beautiful Mind","The Snake and the Mirror","My Childhood","Packing","Reach for the Top","The Bond of Love","Kathmandu","If I Were You","The Road Not Taken","Wind","Rain on the Roof","The Lake Isle of Innisfree","A Legend of the Northland","No Men Are Foreign","On Killing a Tree","A Slumber Did My Spirit Seal"],
+      "Hindi": ["दो बैलों की कथा","ल्हासा की ओर","उपभोक्तावाद की संस्कृति","साँवले सपनों की याद","नाना साहब की पुत्री देवी मैना को भस्म कर दिया गया","प्रेमचंद के फटे जूते","मेरे बचपन के दिन","एक कुत्ता और एक मैना","इस जल प्रलय में","रीढ़ की हड्डी","माटी वाली","किस तरह आखिरकार मैं हिंदी में आया"],
+      "Sanskrit": ["भारतीवसन्तगीतिः","स्वर्णकाकः","गोदोहनम्","कलम् अपि शस्त्रम्","देवासुरसंग्रामः","भ्रान्तो बालः","प्रत्यभिज्ञानम्","लौहतुला","सिकतासेतुः","जटायोः शौर्यम्","पर्यावरणम्","वाङ्मनःप्राणस्वरूपम्"]
+    }
+  },
+  10: {
+    subjects: ["Science","Mathematics","Social Science","English","Hindi","Sanskrit"],
+    chapters: {
+      "Science": ["Chemical Reactions and Equations","Acids, Bases and Salts","Metals and Non-metals","Carbon and Its Compounds","Periodic Classification of Elements","Life Processes","Control and Coordination","How do Organisms Reproduce?","Heredity and Evolution","Light – Reflection and Refraction","Human Eye and the Colourful World","Electricity","Magnetic Effects of Electric Current","Sources of Energy","Our Environment","Management of Natural Resources"],
+      "Mathematics": ["Real Numbers","Polynomials","Pair of Linear Equations in Two Variables","Quadratic Equations","Arithmetic Progressions","Triangles","Coordinate Geometry","Introduction to Trigonometry","Some Applications of Trigonometry","Circles","Constructions","Areas Related to Circles","Surface Areas and Volumes","Statistics","Probability"],
+      "Social Science": ["The Rise of Nationalism in Europe","Nationalism in India","The Making of a Global World","The Age of Industrialisation","Print Culture and the Modern World","Resources and Development","Forest and Wildlife Resources","Water Resources","Agriculture","Minerals and Energy Resources","Manufacturing Industries","Lifelines of National Economy","Power Sharing","Federalism","Democracy and Diversity","Gender, Religion and Caste","Popular Struggles and Movements","Political Parties","Outcomes of Democracy","Challenges to Democracy","Development","Sectors of the Indian Economy","Money and Credit","Globalisation and the Indian Economy","Consumer Rights"],
+      "English": ["A Letter to God","Nelson Mandela: Long Walk to Freedom","Two Stories about Flying","From the Diary of Anne Frank","The Hundred Dresses–I","The Hundred Dresses–II","Glimpses of India","Mijbil the Otter","Madam Rides the Bus","The Sermon at Benares","The Proposal","A Triumph of Surgery","The Thief's Story","The Midnight Visitor","A Question of Trust","Footprints without Feet","The Making of a Scientist","The Necklace","The Hack Driver","Bholi","The Book That Saved the Earth"],
+      "Hindi": ["सूरदास","तुलसीदास","देव","जयशंकर प्रसाद","सूर्यकांत त्रिपाठी निराला","नागार्जुन","गिरिजाकुमार माथुर","ऋतुराज","मंगलेश डबराल","स्वयं प्रकाश","रामवृक्ष बेनीपुरी","यशपाल","सर्वेश्वर दयाल सक्सेना","मनु भंडारी","महावीर प्रसाद द्विवेदी","यतीन्द्र मिश्र","भदंत आनंद कौसल्यायन"],
+      "Sanskrit": ["शुचिपर्यावरणम्","बुद्धिर्बलवती सदा","व्यायामः सर्वदा पथ्यः","शिशुलालनम्","जननी तुल्यवत्सला","सुभाषितानि","सौहार्दं प्रकृतेः शोभा","विचित्रः साक्षी","सूक्तयः","भूकंपविभीषिका","प्राणेभ्योऽपि प्रियः सुह्रद्","अनयोः यः श्रेष्ठः"]
+    }
+  },
+  11: {
+    science: {
+      subjects: ["Physics","Chemistry","Mathematics","Biology","English","Computer Science"],
+      chapters: {
+        "Physics": ["Physical World","Units and Measurement","Motion in a Straight Line","Motion in a Plane","Laws of Motion","Work, Energy and Power","System of Particles and Rotational Motion","Gravitation","Mechanical Properties of Solids","Mechanical Properties of Fluids","Thermal Properties of Matter","Thermodynamics","Kinetic Theory","Oscillations","Waves"],
+        "Chemistry": ["Some Basic Concepts of Chemistry","Structure of Atom","Classification of Elements and Periodicity in Properties","Chemical Bonding and Molecular Structure","States of Matter","Thermodynamics","Equilibrium","Redox Reactions","Hydrogen","The s-Block Elements","The p-Block Elements","Organic Chemistry – Some Basic Principles and Techniques","Hydrocarbons","Environmental Chemistry"],
+        "Mathematics": ["Sets","Relations and Functions","Trigonometric Functions","Principle of Mathematical Induction","Complex Numbers and Quadratic Equations","Linear Inequalities","Permutations and Combinations","Binomial Theorem","Sequences and Series","Straight Lines","Conic Sections","Introduction to 3D Geometry","Limits and Derivatives","Mathematical Reasoning","Statistics","Probability"],
+        "Biology": ["The Living World","Biological Classification","Plant Kingdom","Animal Kingdom","Morphology of Flowering Plants","Anatomy of Flowering Plants","Structural Organisation in Animals","Cell: The Unit of Life","Biomolecules","Cell Cycle and Cell Division","Transport in Plants","Mineral Nutrition","Photosynthesis in Higher Plants","Respiration in Plants","Plant Growth and Development","Digestion and Absorption","Breathing and Exchange of Gases","Body Fluids and Circulation","Excretory Products and their Elimination","Locomotion and Movement","Neural Control and Coordination","Chemical Coordination and Integration"],
+        "English": ["The Portrait of a Lady","We're Not Afraid to Die...","Discovering Tut: the Saga Continues","Landscape of the Soul","The Ailing Planet","The Browning Version","The Adventure","Silk Road","A Photograph","The Laburnum Top","The Voice of the Rain","Childhood","Father to Son"],
+        "Computer Science": ["Computer Overview","Software Concepts","Data Representation","Microprocessor","Memory Concepts","Input Output Devices","Introduction to C++","Data Types, Variables and Constants","Operators and Expressions","Control Structures","Functions","Arrays","Strings","Pointers","File Handling"]
+      }
+    },
+    commerce: {
+      subjects: ["Accountancy","Business Studies","Economics","Mathematics","English"],
+      chapters: {
+        "Accountancy": ["Introduction to Accounting","Theory Base of Accounting","Recording of Transactions I","Recording of Transactions II","Bank Reconciliation Statement","Trial Balance and Rectification of Errors","Depreciation, Provisions and Reserves","Bill of Exchange","Financial Statements I","Financial Statements II","Accounts from Incomplete Records","Applications of Computers in Accounting","Computerised Accounting System"],
+        "Business Studies": ["Nature and Purpose of Business","Forms of Business Organisation","Public, Private and Global Enterprises","Business Services","Emerging Modes of Business","Social Responsibilities of Business and Business Ethics","Formation of a Company","Sources of Business Finance","Small Business","Internal Trade","International Business"],
+        "Economics": ["Introduction","Collection of Data","Organisation of Data","Presentation of Data","Measures of Central Tendency","Measures of Dispersion","Correlation","Index Numbers","Use of Statistical Tools","Indian Economy on the Eve of Independence","Indian Economy 1950–1990","Liberalisation, Privatisation and Globalisation","Poverty","Human Capital Formation","Rural Development","Employment: Growth, Informalisation and Other Issues","Infrastructure","Environment and Sustainable Development","Comparative Development Experiences"],
+        "Mathematics": ["Sets","Relations and Functions","Trigonometric Functions","Principle of Mathematical Induction","Complex Numbers and Quadratic Equations","Linear Inequalities","Permutations and Combinations","Binomial Theorem","Sequences and Series","Straight Lines","Conic Sections","Introduction to 3D Geometry","Limits and Derivatives","Mathematical Reasoning","Statistics","Probability"],
+        "English": ["The Portrait of a Lady","We're Not Afraid to Die...","Discovering Tut: the Saga Continues","Landscape of the Soul","The Ailing Planet","The Browning Version","The Adventure","Silk Road","A Photograph","The Laburnum Top","The Voice of the Rain","Childhood","Father to Son"]
+      }
+    },
+    arts: {
+      subjects: ["History","Political Science","Geography","Sociology","English","Psychology"],
+      chapters: {
+        "History": ["From the Beginning of Time","Early Cities","An Empire Across Three Continents","The Central Islamic Lands","Nomadic Empires","The Three Orders","Changing Cultural Traditions","Confrontation of Cultures","The Industrial Revolution","Displacing Indigenous Peoples","Paths to Modernisation"],
+        "Political Science": ["Political Theory: An Introduction","Freedom","Equality","Social Justice","Rights","Citizenship","Nationalism","Secularism","Peace","Development"],
+        "Geography": ["Geography as a Discipline","The Origin and Evolution of the Earth","Interior of the Earth","Distribution of Oceans and Continents","Minerals and Rocks","Geomorphic Processes","Landforms and their Evolution","Composition and Structure of Atmosphere","Solar Radiation, Heat Balance and Temperature","Atmospheric Circulation and Weather Systems","Water in the Atmosphere","World Climate and Climate Change","Water (Oceans)","Movements of Ocean Water","Life on the Earth","Biodiversity and Conservation"],
+        "Sociology": ["Sociology and Society","Terms, Concepts and their Use in Sociology","Understanding Social Institutions","Culture and Socialisation","Doing Sociology: Research Methods","Social Structure, Stratification and Social Processes in Society","Social Change and Social Order in Rural and Urban Society","Environment and Society","Introducing Western Sociologists","Indian Sociologists"],
+        "English": ["The Portrait of a Lady","We're Not Afraid to Die...","Discovering Tut: the Saga Continues","Landscape of the Soul","The Ailing Planet","The Browning Version","The Adventure","Silk Road","A Photograph","The Laburnum Top","The Voice of the Rain","Childhood","Father to Son"],
+        "Psychology": ["What is Psychology?","Methods of Enquiry in Psychology","The Bases of Human Behaviour","Human Development","Sensory, Attentional and Perceptual Processes","Learning","Human Memory","Thinking","Motivation and Emotion"]
+      }
+    }
+  },
+  12: {
+    science: {
+      subjects: ["Physics","Chemistry","Mathematics","Biology","English","Computer Science"],
+      chapters: {
+        "Physics": ["Electric Charges and Fields","Electrostatic Potential and Capacitance","Current Electricity","Moving Charges and Magnetism","Magnetism and Matter","Electromagnetic Induction","Alternating Current","Electromagnetic Waves","Ray Optics and Optical Instruments","Wave Optics","Dual Nature of Radiation and Matter","Atoms","Nuclei","Semiconductor Electronics","Communication Systems"],
+        "Chemistry": ["The Solid State","Solutions","Electrochemistry","Chemical Kinetics","Surface Chemistry","General Principles and Processes of Isolation of Elements","The p-Block Elements","The d and f Block Elements","Coordination Compounds","Haloalkanes and Haloarenes","Alcohols, Phenols and Ethers","Aldehydes, Ketones and Carboxylic Acids","Amines","Biomolecules","Polymers","Chemistry in Everyday Life"],
+        "Mathematics": ["Relations and Functions","Inverse Trigonometric Functions","Matrices","Determinants","Continuity and Differentiability","Application of Derivatives","Integrals","Application of Integrals","Differential Equations","Vector Algebra","Three Dimensional Geometry","Linear Programming","Probability"],
+        "Biology": ["Reproduction in Organisms","Sexual Reproduction in Flowering Plants","Human Reproduction","Reproductive Health","Principles of Inheritance and Variation","Molecular Basis of Inheritance","Evolution","Human Health and Disease","Strategies for Enhancement in Food Production","Microbes in Human Welfare","Biotechnology: Principles and Processes","Biotechnology and its Applications","Organisms and Populations","Ecosystem","Biodiversity and Conservation","Environmental Issues"],
+        "English": ["The Last Lesson","Lost Spring","Deep Water","The Rattrap","Indigo","Poets and Pancakes","The Interview","Going Places","My Mother at Sixty-six","An Elementary School Classroom in a Slum","Keeping Quiet","A Thing of Beauty","A Roadside Stand","Aunt Jennifer's Tigers","The Tiger King","Journey to the End of the Earth","The Enemy","On the Face of It","Memories of Childhood"],
+        "Computer Science": ["Review of C++","Object-Oriented Programming","Inheritance","Polymorphism","File Handling","Pointer Revision","Data Structures: Arrays","Stacks","Queues","Linked Lists","Database Concepts","SQL","Boolean Algebra","Networking Concepts","Cyber Ethics and Security"]
+      }
+    },
+    commerce: {
+      subjects: ["Accountancy","Business Studies","Economics","Mathematics","English"],
+      chapters: {
+        "Accountancy": ["Accounting for Partnership: Basic Concepts","Change in Profit Sharing Ratio","Admission of a Partner","Retirement/Death of a Partner","Dissolution of Partnership","Accounting for Share Capital","Issue and Redemption of Debentures","Financial Statements of a Company","Analysis of Financial Statements","Accounting Ratios","Cash Flow Statement"],
+        "Business Studies": ["Nature and Significance of Management","Principles of Management","Business Environment","Planning","Organising","Staffing","Directing","Controlling","Financial Management","Financial Markets","Marketing Management","Consumer Protection","Entrepreneurship Development"],
+        "Economics": ["Introduction to Macroeconomics","National Income Accounting","Money and Banking","Determination of Income and Employment","Government Budget and the Economy","Open Economy Macroeconomics","Introduction to Microeconomics","Theory of Consumer Behaviour","Production and Costs","The Theory of the Firm under Perfect Competition","Market Equilibrium","Non-competitive Markets"],
+        "Mathematics": ["Relations and Functions","Inverse Trigonometric Functions","Matrices","Determinants","Continuity and Differentiability","Application of Derivatives","Integrals","Application of Integrals","Differential Equations","Vector Algebra","Three Dimensional Geometry","Linear Programming","Probability"],
+        "English": ["The Last Lesson","Lost Spring","Deep Water","The Rattrap","Indigo","Poets and Pancakes","The Interview","Going Places","My Mother at Sixty-six","An Elementary School Classroom in a Slum","Keeping Quiet","A Thing of Beauty","A Roadside Stand","Aunt Jennifer's Tigers","The Tiger King","Journey to the End of the Earth","The Enemy","On the Face of It","Memories of Childhood"]
+      }
+    },
+    arts: {
+      subjects: ["History","Political Science","Geography","Sociology","English","Psychology"],
+      chapters: {
+        "History": ["Bricks, Beads and Bones","Kings, Farmers and Towns","Kinship, Caste and Class","Thinkers, Beliefs and Buildings","Through the Eyes of Travellers","Bhakti-Sufi Traditions","An Imperial Capital: Vijayanagara","Peasants, Zamindars and the State","Kings and Chronicles","Colonialism and the Countryside","Rebels and the Raj","Colonial Cities","Mahatma Gandhi and the Nationalist Movement","Understanding Partition","Framing the Constitution"],
+        "Political Science": ["The Cold War Era","The End of Bipolarity","US Hegemony in World Politics","Alternative Centres of Power","Contemporary South Asia","International Organisations","Security in the Contemporary World","Environment and Natural Resources","Globalisation","Challenges of Nation Building","Era of One-Party Dominance","Politics of Planned Development","India's External Relations","Challenges to the Congress System","Crisis of the Constitutional Order","The Rise of Popular Movements","Regional Aspirations","Recent Developments in Indian Politics"],
+        "Geography": ["Human Geography: Nature and Scope","The World Population: Distribution, Density and Growth","Population Composition","Human Development","Primary Activities","Secondary Activities","Tertiary and Quaternary Activities","Transport and Communication","International Trade","Human Settlements","Population: Distribution, Density, Growth and Composition","Migration: Types, Causes and Consequences","Human Development","Human Settlements","Land Resources and Agriculture","Water Resources","Mineral and Energy Resources","Manufacturing Industries","Planning and Sustainable Development","Transport and Communication","International Trade","Geographical Perspective on Selected Issues"],
+        "Sociology": ["Introducing Indian Society","The Demographic Structure of the Indian Society","Social Institutions: Continuity and Change","Market as a Social Institution","Patterns of Social Inequality and Exclusion","The Challenges of Cultural Diversity","Suggestions for Project Work","Change and Development in Rural Society","Change and Development in Industrial Society","Globalisation and Social Change","Mass Media and Communications","Social Movements"],
+        "English": ["The Last Lesson","Lost Spring","Deep Water","The Rattrap","Indigo","Poets and Pancakes","The Interview","Going Places","My Mother at Sixty-six","An Elementary School Classroom in a Slum","Keeping Quiet","A Thing of Beauty","A Roadside Stand","Aunt Jennifer's Tigers","The Tiger King","Journey to the End of the Earth","The Enemy","On the Face of It","Memories of Childhood"],
+        "Psychology": ["Variations in Psychological Attributes","Self and Personality","Meeting Life Challenges","Psychological Disorders","Therapeutic Approaches","Attitude and Social Cognition","Social Influence and Group Processes","Psychology and Life","Developing Psychological Skills"]
+      }
+    }
+  }
+};
+
+const MODES = {
+  "full-revision": "full chapter-wise revision",
+  "mcqs": "MCQ practice",
+  "short-q": "short answer questions (2–3 marks)",
+  "long-q": "long answer questions (5 marks)",
+  "key-concepts": "key concepts and summary notes",
+  "prev-year": "previous year-style questions (KVS/NVS pattern)",
+  "formula-sheet": "formula and fact sheet",
+  "mind-map": "mind map-style structured notes"
+};
+const MODE_INST = {
+  "full-revision": "For each chapter provide: (a) key concepts and definitions, (b) important points to remember, (c) {Q} MCQs with answers, (d) {Q} short-answer questions (2–3 marks) with model answers, (e) {Q} long-answer questions (5 marks) with detailed answers. Format each chapter with clear headings.",
+  "mcqs": "Generate {Q} MCQs per chapter with 4 options each. Mark the correct answer and provide a 1-line explanation for each. Focus on concepts most frequently tested in KVS/NVS exams.",
+  "short-q": "Provide {Q} important short-answer questions (2–3 marks) per chapter with model answers in 4–6 lines each. Prioritize frequently tested concepts in KVS/NVS.",
+  "long-q": "Provide {Q} important long-answer questions (5 marks) per chapter with detailed model answers. Use point format. Mention diagrams where applicable.",
+  "key-concepts": "For each chapter create a concise revision sheet with: (a) key terms and definitions, (b) important formulas / processes / dates, (c) common exam mistakes to avoid, (d) a quick 5-point summary. Make it ideal for last-minute revision.",
+  "prev-year": "Frame {Q} questions per chapter in the exact style of KVS/NVS previous year papers — include 1-mark, 3-mark, and 5-mark types. Also mention which topics/chapters appear most frequently in these exams.",
+  "formula-sheet": "Create a clean formula and fact sheet for each chapter listing all formulas, equations, laws, dates, or key data points a student must memorize for KVS/NVS. Organize by topic within each chapter.",
+  "mind-map": "Create a structured mind-map style text outline for each chapter: main topic → subtopics → key points (max 3 levels deep). Use indentation. Keep it concise and memorization-friendly."
+};
+const DIFF_INST = {
+  "easy": "Keep the questions at a basic/foundational level — straightforward recall and understanding (NCERT-direct questions). Suitable for initial revision.",
+  "medium": "Set questions at standard CBSE board exam level — application and understanding-based. Moderate difficulty.",
+  "hard": "Set questions at a high difficulty level as expected in KVS/NVS competitive exams — analytical, application-based, and higher-order thinking questions. Include tricky or commonly confused concepts.",
+  "mixed": "Include a balanced mix of easy (30%), medium (40%), and hard (30%) questions to cover all difficulty levels as seen in KVS/NVS papers."
+};
+
+let selClass = 9, selStream = "science", selSubject = "Science", selChapters = new Set(), selMode = "full-revision", selDiff = "easy";
+
+function getSubjectsAndChapters() {
+  const cls = String(selClass);
+  if (cls === "9" || cls === "10") {
+    const d = DATA[cls];
+    return { subjects: d.subjects, chapters: d.chapters[selSubject] || [] };
+  } else {
+    const d = DATA[cls][selStream];
+    if (!d) return { subjects: [], chapters: [] };
+    return { subjects: d.subjects, chapters: (d.chapters[selSubject] || []) };
+  }
+}
+
+function onClassChange() {
+  selClass = parseInt(document.getElementById("sel-class").value);
+  const streamSel = document.getElementById("sel-stream");
+  streamSel.disabled = selClass < 11;
+  const { subjects } = getSubjectsAndChapters();
+  if (!subjects.includes(selSubject)) selSubject = subjects[0] || "";
+  renderSubjects(); renderChapters();
+}
+
+function onStreamChange() {
+  selStream = document.getElementById("sel-stream").value;
+  const { subjects } = getSubjectsAndChapters();
+  if (!subjects.includes(selSubject)) selSubject = subjects[0] || "";
+  renderSubjects(); renderChapters();
+}
+
+function renderSubjects() {
+  const { subjects } = getSubjectsAndChapters();
+  const c = document.getElementById("subject-chips"); c.innerHTML = "";
+  subjects.forEach(s => {
+    const d = document.createElement("div");
+    d.className = "chip" + (s === selSubject ? " on-purple" : "");
+    d.textContent = s;
+    d.onclick = () => { selSubject = s; renderSubjects(); renderChapters(); };
+    c.appendChild(d);
+  });
+}
+
+function renderChapters() {
+  const { chapters } = getSubjectsAndChapters();
+  selChapters = new Set(chapters);
+  const c = document.getElementById("chapter-chips"); c.innerHTML = "";
+  chapters.forEach(ch => {
+    const d = document.createElement("div");
+    d.className = "ch-chip sel";
+    d.textContent = ch;
+    d.onclick = () => { if(selChapters.has(ch)){selChapters.delete(ch);d.classList.remove("sel");}else{selChapters.add(ch);d.classList.add("sel");} updateCounter(); };
+    c.appendChild(d);
+  });
+  updateCounter();
+  document.getElementById("sel-all-btn").textContent = "Deselect all";
+}
+
+function updateCounter() {
+  const { chapters } = getSubjectsAndChapters();
+  document.getElementById("ch-counter").textContent = selChapters.size + " / " + chapters.length + " selected";
+  document.getElementById("sel-all-btn").textContent = selChapters.size === chapters.length ? "Deselect all" : "Select all";
+}
+
+function toggleAllChapters() {
+  const { chapters } = getSubjectsAndChapters();
+  const allSel = selChapters.size === chapters.length;
+  if (allSel) { selChapters.clear(); document.querySelectorAll(".ch-chip").forEach(c=>c.classList.remove("sel")); }
+  else { selChapters = new Set(chapters); document.querySelectorAll(".ch-chip").forEach(c=>c.classList.add("sel")); }
+  updateCounter();
+}
+
+document.getElementById("mode-chips").addEventListener("click", e => {
+  const ch = e.target.closest(".chip[data-mode]"); if(!ch) return;
+  selMode = ch.dataset.mode;
+  document.querySelectorAll("#mode-chips .chip").forEach(c=>{c.className="chip"+(c.dataset.mode===selMode?" on-teal":"");});
+});
+
+document.getElementById("diff-chips").addEventListener("click", e => {
+  const ch = e.target.closest(".chip[data-diff]"); if(!ch) return;
+  selDiff = ch.dataset.diff;
+  document.querySelectorAll("#diff-chips .chip").forEach(c=>{c.className="chip"+(c.dataset.diff===selDiff?" on-amber":"");});
+});
+
+function generatePrompt() {
+  const chList = [...selChapters];
+  if (!chList.length) { document.getElementById("prompt-output").textContent = "Please select at least one chapter."; return; }
+  const qCount = document.getElementById("q-count").value;
+  const classLabel = "Class " + selClass + (selClass >= 11 ? " (" + selStream.charAt(0).toUpperCase()+selStream.slice(1) + ")" : "");
+  const chapStr = chList.map((c,i)=>`${i+1}. ${c}`).join("\n");
+  const modeInst = MODE_INST[selMode].replace(/{Q}/g, qCount);
+  const diffInst = DIFF_INST[selDiff];
+  const prompt = `You are an expert NCERT teacher helping a student prepare for KVS/NVS examinations.\n\nClass: ${classLabel}\nSubject: ${selSubject}\nStudy mode: ${MODES[selMode]}\nDifficulty: ${selDiff.charAt(0).toUpperCase()+selDiff.slice(1)}\n\nChapters to cover:\n${chapStr}\n\nInstructions:\n${modeInst}\n\nDifficulty guideline: ${diffInst}\n\nAdditional requirements:\n- Align all questions strictly with the NCERT syllabus for ${classLabel}.\n- Follow the pattern and marking scheme of KVS/NVS examinations.\n- Use simple, clear language appropriate for a Class ${selClass} student.\n- For each chapter, begin with the chapter name as a heading.\n- If a diagram, graph, or table is important for the answer, mention it explicitly.`;
+  document.getElementById("prompt-output").textContent = prompt;
+}
+
+function copyPrompt() {
+  const text = document.getElementById("prompt-output").textContent;
+  if (!text || text.startsWith("Configure") || text.startsWith("Please")) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById("copy-btn");
+    btn.classList.add("copied");
+    btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Copied!';
+    setTimeout(()=>{ btn.classList.remove("copied"); btn.innerHTML='<i class="ti ti-copy" aria-hidden="true"></i> Copy'; }, 2200);
+  });
+}
+
+function askClaude() {
+  const text = document.getElementById("prompt-output").textContent;
+  if (!text || text.startsWith("Configure") || text.startsWith("Please")) { generatePrompt(); return; }
+  sendPrompt(text);
+}
+
+renderSubjects(); renderChapters();
+</script>
